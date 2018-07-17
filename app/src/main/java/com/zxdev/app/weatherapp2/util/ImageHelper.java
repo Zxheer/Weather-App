@@ -1,4 +1,4 @@
-package com.zxdev.app.weatherapp2;
+package com.zxdev.app.weatherapp2.util;
 
 import android.support.annotation.DrawableRes;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.zxdev.app.weatherapp2;
+package com.zxdev.app.weatherapp2.network;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -25,6 +25,10 @@ import org.json.JSONException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import com.zxdev.app.weatherapp2.model.Weather;
+import com.zxdev.app.weatherapp2.model.Forecast;
+import com.zxdev.app.weatherapp2.util.*;
+import com.zxdev.app.weatherapp2.network.*;
 
 
 public class HomeActivity extends AppCompatActivity {

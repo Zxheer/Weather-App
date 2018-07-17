@@ -1,8 +1,10 @@
-package com.zxdev.app.weatherapp2;
+package com.zxdev.app.weatherapp2.util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.zxdev.app.weatherapp2.model.Weather;
+import com.zxdev.app.weatherapp2.model.Forecast;
 
 public class JSONParser {
 
