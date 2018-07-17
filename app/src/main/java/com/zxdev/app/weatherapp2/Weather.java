@@ -1,4 +1,4 @@
-package com.zxdev.app.weatherapp2.model;
+package com.zxdev.app.weatherapp2;
 
 import android.util.Log;
 
