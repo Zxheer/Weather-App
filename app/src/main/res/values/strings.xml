@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">WeatherApp2</string>
+    <string name="app_name">Weather App</string>
+    <string name="ok"> OK </string>
+    <string name="gps"> Enable GPS </string>
+    <string name="net"> Connect to Network </string>
+    <string name="loc"> Check location permissons </string>
 </resources>
