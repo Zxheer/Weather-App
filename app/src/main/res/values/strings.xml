@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather App</string>
+    <string name="app_name">SOLAR</string>
     <string name="ok"> OK </string>
     <string name="gps"> Enable GPS </string>
     <string name="net"> Connect to Network </string>

@@ -1,5 +1,8 @@
 package com.zxdev.app.weatherapp2.network;
 
+
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,7 +19,7 @@ public class WeatherHttpClient {
 
         String[] data = new String[2];
         String currentUrl = CURRENT_URL + lat + "&lon=" + lon + "&lang=" + lang + "&units=metric" + "&APPID=" + API_KEY;
-        String forecastUrl = FORECAST_URL + lat + "&lon=" + lon + "&lang=" + lang +"&units=metric" + "&APPID=" + API_KEY + "&cnt=5";
+        String forecastUrl = FORECAST_URL + lat + "&lon=" + lon + "&lang=" + lang +"&units=metric" + "&APPID=" + API_KEY;
 
         data[0] = getData(currentUrl);
         data[1] = getData(forecastUrl);
@@ -52,13 +55,13 @@ public class WeatherHttpClient {
 
         } finally {
             try {
-                assert is != null;
+                //assert is != null;
                 is.close();
             } catch (Throwable t) {
                 t.printStackTrace();
             }
             try {
-                assert con != null;
+                //assert con != null;
                 con.disconnect();
             } catch (Throwable t) {
                 t.printStackTrace();

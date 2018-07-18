@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.json.JSONException;
@@ -76,6 +77,7 @@ public class HomeActivity extends AppCompatActivity {
 
             Weather weather = new Weather();
             data = ((new WeatherHttpClient()).getWeatherData(params[0], params[1], params[2]));
+
 
             try {
                 weather = JSONParser.getWeather(data[0]);
@@ -252,6 +254,8 @@ public class HomeActivity extends AppCompatActivity {
             {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
+                JSONWeatherTask task = new JSONWeatherTask();
+                task.execute(Double.toString(latitude),Double.toString(longitude), lang);
             }
 
             @Override
