@@ -74,6 +74,9 @@ public class HomeActivity extends AppCompatActivity {
             String[] data = new String[2];
             days[0] = new Forecast();
             days[1] = new Forecast();
+            days[2] = new Forecast();
+            days[3] = new Forecast();
+            days[4] = new Forecast();
 
             Weather weather = new Weather();
             data = ((new WeatherHttpClient()).getWeatherData(params[0], params[1], params[2]));
@@ -97,7 +100,8 @@ public class HomeActivity extends AppCompatActivity {
             String[] dayNames = new String[5];
             dayNames = getForecastDays(dayNames);
 
-            //forecastGUI(weather,dayNames);
+            forecastGUI(weather,dayNames);
+            Log.e("TEST", "UPDATED" );
         }
 
     }

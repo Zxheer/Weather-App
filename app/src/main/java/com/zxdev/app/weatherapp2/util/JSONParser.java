@@ -33,8 +33,6 @@ public class JSONParser {
 
     public static Forecast[] getForecast(String data) throws JSONException {
 
-
-
         Forecast[] days = new Forecast[5];
         days[0] = new Forecast();
         days[1] = new Forecast();
@@ -48,74 +46,114 @@ public class JSONParser {
         Double highTemp = 0.0;
         Integer Highest = 0;
         Integer z = 0;
+        Integer x = 0;
+        Integer carryOver = 0;
+        Integer q = 0;
+        boolean b = false;
+        Integer i = 0;
 
-
-
-
-        for (int i = 0; 40 > i; i++)
-        {
+        while (!b) {
             JSONObject rawArr = tempArrr.getJSONObject(i);
             JSONObject mainObj = rawArr.getJSONObject("main");
 
-           // Log.e("TEST", rawArr.toString() );
-          //  Log.e("TEST", "DONEEEEEEEEEEEEEEEEe" );
             String time = rawArr.getString("dt_txt");
 
-            if((time.charAt(11) == '0') && (time.charAt(12) == '0'))
-                Log.e("TEST", "MIDNIGHT" );
-
-
-            if (i == 0)
-            {
+            if (i == 0) {
                 highTemp = mainObj.getDouble("temp");
-                Highest = 0 ;
+                Highest = 0;
             }
 
-            if (highTemp < mainObj.getDouble("temp"))
-            {
+            if (highTemp < mainObj.getDouble("temp")) {
                 highTemp = mainObj.getDouble("temp");
                 Highest = i;
             }
 
 
-            if (i % 8 == 0)
-            {
+            if ((time.charAt(11) == '0') && (time.charAt(12) == '0')) {
                 JSONObject rawArr2 = tempArrr.getJSONObject(Highest);
                 JSONObject mainObj2 = rawArr2.getJSONObject("main");
+                carryOver = x;
+ //WEATHER SET               //days[0].setTemp(mainObj2.getDouble("temp"));
+                b = true;
+
+            }
+
+            i++;
+            x++;
+        }
+
+
+        z = 0;
+        Integer l = 1;
+
+        for (int p = carryOver; p < 32 + carryOver; p++) {
+
+            JSONObject rawArr3 = tempArrr.getJSONObject(p);
+            JSONObject mainObj = rawArr3.getJSONObject("main");
+
+            if (p == carryOver) {
+                highTemp = mainObj.getDouble("temp");
+                Highest = 0;
+            }
+
+            if (highTemp < mainObj.getDouble("temp")) {
+                highTemp = mainObj.getDouble("temp");
+                Highest = p;
+            }
+
+            if (l % 8 == 0) {
+                JSONObject rawArr2 = tempArrr.getJSONObject(Highest);
+                JSONObject mainObj2 = rawArr2.getJSONObject("main");
+
                 days[z].setTemp(mainObj2.getDouble("temp"));
                 Highest = 0;
                 highTemp = 0.0;
                 z++;
 
             }
+            l++;
+        }
 
+        for (int g = 0; g < 8-carryOver; g++)
+        {
+            JSONObject rawArr3 = tempArrr.getJSONObject(g+carryOver+32);
+            JSONObject mainObj = rawArr3.getJSONObject("main");
 
+            if (g == carryOver) {
+                highTemp = mainObj.getDouble("temp");
+                Highest = 0;
+            }
 
-            // Log.e("TEST", Double.toString(mainObj.getDouble("temp")));
-
+            if (highTemp < mainObj.getDouble("temp")) {
+                highTemp = mainObj.getDouble("temp");
+                Highest = g+carryOver+32;
+                days[4].setTemp(mainObj.getDouble("temp"));
+            }
 
         }
-        Log.e("TEST", "DONEEEEEEEEEEEEEEEEe" );
 
         Integer k = 0;
-//        Log.e("TEST", "STOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPP");
 
-        for (int i = 0; 40 > i; i+= 8) {
+        JSONObject rawObj2 = new JSONObject(data);
+        JSONArray tempArrr2 = rawObj2.getJSONArray("list");
 
-            JSONObject rawArr = tempArrr.getJSONObject(i);
-            //JSONObject mainObj = rawArr.getJSONObject("main");
-            //days[i].setTemp(mainObj.getDouble("temp"));
+        for (int v = 0; 40 > v; v += 8) {
+
+            JSONObject rawArr = tempArrr2.getJSONObject(v);
 
             JSONArray weatherArr = rawArr.getJSONArray("weather");
             JSONObject weatherObj = weatherArr.getJSONObject(0);
-            if(!(i == 0))
-            {
-                k = (Integer) Math.round(i/8);
+
+
+            if (!(v == 0)) {
+                k = (Integer) Math.round(v / 8);
                 days[k].setCondition(weatherObj.getString("main"));
-            }
-            else
-                days[i].setCondition(weatherObj.getString("main"));
+            } else
+                days[v].setCondition(weatherObj.getString("main"));
+
+
         }
+
         return days;
     }
 

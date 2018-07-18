@@ -14,6 +14,7 @@ public class Forecast {
         return condition;
     }
     public void setCondition(String condition) {
+
         switch (condition) {
             case "Thunderstorm":
             case "Drizzle":
