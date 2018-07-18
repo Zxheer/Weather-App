@@ -50,10 +50,20 @@ public class JSONParser {
         Integer z = 0;
 
 
+
+
         for (int i = 0; 40 > i; i++)
         {
             JSONObject rawArr = tempArrr.getJSONObject(i);
             JSONObject mainObj = rawArr.getJSONObject("main");
+
+           // Log.e("TEST", rawArr.toString() );
+          //  Log.e("TEST", "DONEEEEEEEEEEEEEEEEe" );
+            String time = rawArr.getString("dt_txt");
+
+            if((time.charAt(11) == '0') && (time.charAt(12) == '0'))
+                Log.e("TEST", "MIDNIGHT" );
+
 
             if (i == 0)
             {
@@ -78,9 +88,17 @@ public class JSONParser {
                 z++;
 
             }
+
+
+
+            // Log.e("TEST", Double.toString(mainObj.getDouble("temp")));
+
+
         }
+        Log.e("TEST", "DONEEEEEEEEEEEEEEEEe" );
 
         Integer k = 0;
+//        Log.e("TEST", "STOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPP");
 
         for (int i = 0; 40 > i; i+= 8) {
 

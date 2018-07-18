@@ -16,6 +16,8 @@ public class ImageHelper {
 
     public static void getImageByDescription(String description, ImageView imageView) {
 
+        Log.e("TEST", description );
+
         switch (description) {
 
             case "Cloudy":

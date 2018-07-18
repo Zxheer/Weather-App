@@ -97,7 +97,7 @@ public class HomeActivity extends AppCompatActivity {
             String[] dayNames = new String[5];
             dayNames = getForecastDays(dayNames);
 
-            forecastGUI(weather,dayNames);
+            //forecastGUI(weather,dayNames);
         }
 
     }
