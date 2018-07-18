@@ -5,6 +5,8 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.zxdev.app.weatherapp2.HomeActivity;
 import com.zxdev.app.weatherapp2.model.Weather;
 import com.zxdev.app.weatherapp2.model.Forecast;
 
@@ -44,6 +46,7 @@ public class JSONParser {
         JSONArray tempArrr = rawObj.getJSONArray("list");
 
         Double highTemp = 0.0;
+        Double lowTemp = 0.0;
         Integer Highest = 0;
         Integer z = 0;
         Integer x = 0;
@@ -51,6 +54,8 @@ public class JSONParser {
         Integer q = 0;
         boolean b = false;
         Integer i = 0;
+        Integer Lowest = 0;
+        Double temp = 0.0;
 
         while (!b) {
             JSONObject rawArr = tempArrr.getJSONObject(i);
@@ -58,9 +63,14 @@ public class JSONParser {
 
             String time = rawArr.getString("dt_txt");
 
+            temp = mainObj.getDouble("temp");
+
+
             if (i == 0) {
-                highTemp = mainObj.getDouble("temp");
+                highTemp = temp;//mainObj.getDouble("temp");
+                lowTemp = temp;//mainObj.getDouble("temp");
                 Highest = 0;
+                Lowest = 0;
             }
 
             if (highTemp < mainObj.getDouble("temp")) {
@@ -68,12 +78,23 @@ public class JSONParser {
                 Highest = i;
             }
 
+            if (lowTemp > mainObj.getDouble("temp")) {
+                lowTemp = mainObj.getDouble("temp");
+                Lowest = i;
+            }
 
             if ((time.charAt(11) == '0') && (time.charAt(12) == '0')) {
                 JSONObject rawArr2 = tempArrr.getJSONObject(Highest);
                 JSONObject mainObj2 = rawArr2.getJSONObject("main");
+                days[0].setMax(mainObj2.getDouble("temp"));
+
+                JSONObject rawArr23 = tempArrr.getJSONObject(Lowest);
+                JSONObject mainObj23 = rawArr23.getJSONObject("main");
+                days[0].setMin(mainObj23.getDouble("temp"));
+
+
+
                 carryOver = x;
- //WEATHER SET               //days[0].setTemp(mainObj2.getDouble("temp"));
                 b = true;
 
             }

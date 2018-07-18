@@ -86,6 +86,11 @@ public class HomeActivity extends AppCompatActivity {
                 weather = JSONParser.getWeather(data[0]);
                 days = JSONParser.getForecast(data[1]);
 
+                if (days[0].getMax() > weather.getMaxTemp())
+                    weather.setMaxTemp(days[0].getMax());
+                if (days[0].getMin() < weather.getMinTemp())
+                    weather.setMinTemp(days[0].getMin());
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -101,7 +106,6 @@ public class HomeActivity extends AppCompatActivity {
             dayNames = getForecastDays(dayNames);
 
             forecastGUI(weather,dayNames);
-            Log.e("TEST", "UPDATED" );
         }
 
     }
@@ -340,6 +344,5 @@ public class HomeActivity extends AppCompatActivity {
         txtDay4 = findViewById(R.id.txtDay4);
         txtDay5 = findViewById(R.id.txtDay5);
     }
-
 
 }
