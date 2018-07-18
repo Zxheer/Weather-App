@@ -8,9 +8,8 @@
 - The application will then collect the uses current location and make an API call to retrieve the weather details.
 - Finally tbe application will display the current weather and 5 day forcast to the user using the information gathered.
 
+![alt text](assets/Solar1.jpg "Splash Screen")
 
-![alt text](assets/Solar1.png "Splash Screen")
+-
 
-- 
-
-![alt text](assets/Solar2.png "Weather")
+![alt text](assets/Solar2.jpg "Weather")
