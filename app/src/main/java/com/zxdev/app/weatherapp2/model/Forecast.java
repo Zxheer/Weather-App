@@ -2,21 +2,35 @@ package com.zxdev.app.weatherapp2.model;
 
 import android.util.Log;
 
+/**
+ * @author Zaheer Ebrahim
+ * SOLAR
+ * 2018-07-19
+ * Version 1.1.0
+ */
 public class Forecast {
 
     private String condition;
     private double temp;
-    private double min;
-    private double max;
+    private double min;  //Min and max are used as the 5 day forcast gives a better estimate on the
+    private double max;  //current days max and min temp and thus this is checked in HomeActivity
 
+    /**
+     * Default constructor for the 5 day forecast information
+     */
     public Forecast() {
     }
 
     public String getCondition() {
         return condition;
     }
-    public void setCondition(String condition) {
-
+    /**
+     * /**
+     * Mutator to match the condition in the API to the correct condition for the image using the imageHelper
+     * @param condition Current weather condition
+     */
+    public void setCondition(String condition)
+    {
         switch (condition) {
             case "Thunderstorm":
             case "Drizzle":

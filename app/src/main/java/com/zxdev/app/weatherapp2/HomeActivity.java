@@ -31,13 +31,19 @@ import com.zxdev.app.weatherapp2.model.Forecast;
 import com.zxdev.app.weatherapp2.util.*;
 import com.zxdev.app.weatherapp2.network.*;
 
-
+/**
+ * @author Zaheer Ebrahim
+ * SOLAR
+ * 2018-07-19
+ * Version 1.1.0
+ */
 public class HomeActivity extends AppCompatActivity {
 
     private String lang = Locale.getDefault().toString();
     private TextView txtCurrentTemp, txtCurrentCondition, txtCity, txtCurrentMax, txtCurrentMin, txtCurrentT, txtTemp1, txtTemp2, txtTemp3, txtTemp4, txtTemp5, txtDay1, txtDay2, txtDay3, txtDay4, txtDay5;
     private ImageView imgMain, imgDay1, imgDay2, imgDay3, imgDay4, imgDay5;
     private Forecast days[] = new Forecast[5];
+    private Weather weather = new Weather();
     private ConstraintLayout main;
 
     static final int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 0;
@@ -61,34 +67,30 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        init();
-        checkPermissionsAndConnectivity(permissionResult,locManager,isConnected);
+        init();                                                                    //Initialise variables
+        checkPermissionsAndConnectivity(permissionResult,locManager,isConnected);  //Find location
 
     }
 
+    /**
+     * Task used to start the HTTPClient and get JSON object from both API's
+     */
     private class JSONWeatherTask extends AsyncTask<String, Void, Weather> {
 
         @Override
         protected Weather doInBackground(String... params) {
 
             String[] data = new String[2];
-            days[0] = new Forecast();
-            days[1] = new Forecast();
-            days[2] = new Forecast();
-            days[3] = new Forecast();
-            days[4] = new Forecast();
-
-            Weather weather = new Weather();
-            data = ((new WeatherHttpClient()).getWeatherData(params[0], params[1], params[2]));
-
+                         //data[0] stores the weather data and data[1] stores the forecast data
+            data = ((new WeatherHttpClient()).getAllData(params[0], params[1], params[2]));
 
             try {
-                weather = JSONParser.getWeather(data[0]);
-                days = JSONParser.getForecast(data[1]);
+                weather = JSONParser.getWeather(data[0]); //populate weather object using the parser
+                days = JSONParser.getForecast(data[1]);  //populate forecast object using the parser
 
-                if (days[0].getMax() > weather.getMaxTemp())
-                    weather.setMaxTemp(days[0].getMax());
-                if (days[0].getMin() < weather.getMinTemp())
+                if (days[0].getMax() > weather.getMaxTemp())  //since the forecase API returns more detailed info of the current day
+                    weather.setMaxTemp(days[0].getMax());     //compare this info to the single day API data and chnage it if needed
+                if (days[0].getMin() < weather.getMinTemp())  //since the current day API would return the same temp's for min/max
                     weather.setMinTemp(days[0].getMin());
 
             } catch (JSONException e) {
@@ -103,24 +105,27 @@ public class HomeActivity extends AppCompatActivity {
             super.onPostExecute(weather);
 
             String[] dayNames = new String[5];
-            dayNames = getForecastDays(dayNames);
+            dayNames = getForecastDays(dayNames); //get the actual names of the next 5 days
 
-            forecastGUI(weather,dayNames);
+            initGUI(weather,dayNames); //display entire GUI
         }
 
     }
 
     @SuppressLint("SetTextI18n")
-    private void forecastGUI(Weather weather, String[] dayNames) {
+    /**
+     * Initialise the GUI
+     */
+    private void initGUI(Weather weather, String[] dayNames) {
 
-        ImageHelper.getImageByDescription(weather.getCondition(), imgMain);
-        ImageHelper.getImageByDescription(days[0].getCondition(), imgDay1);
-        ImageHelper.getImageByDescription(days[1].getCondition(), imgDay2);
-        ImageHelper.getImageByDescription(days[2].getCondition(), imgDay3);
-        ImageHelper.getImageByDescription(days[3].getCondition(), imgDay4);
-        ImageHelper.getImageByDescription(days[4].getCondition(), imgDay5);
+        ImageHelper.getImage(weather.getCondition(), imgMain);  //Use glide to place images
+        ImageHelper.getImage(days[0].getCondition(), imgDay1);
+        ImageHelper.getImage(days[1].getCondition(), imgDay2);
+        ImageHelper.getImage(days[2].getCondition(), imgDay3);
+        ImageHelper.getImage(days[3].getCondition(), imgDay4);
+        ImageHelper.getImage(days[4].getCondition(), imgDay5);
 
-        if (weather.getCondition() == "Sunny")
+        if (weather.getCondition() == "Sunny")                               //Fill the bottom with appropriate color
             main.setBackgroundColor(Color.parseColor("#47AB2F"));
         else if (weather.getCondition() == "Cloudy")
             main.setBackgroundColor(Color.parseColor("#54717A"));
@@ -128,7 +133,7 @@ public class HomeActivity extends AppCompatActivity {
             main.setBackgroundColor(Color.parseColor("#57575D"));
 
 
-        txtCurrentTemp.setText((Math.round(weather.getTemp())) + "°");
+        txtCurrentTemp.setText((Math.round(weather.getTemp())) + "°");      //Fill in all the weather data
         txtCurrentT.setText((Math.round(weather.getTemp())) + "°");
         txtCurrentMax.setText("  " + (Math.round(weather.getMaxTemp())) + "°");
         txtCurrentMin.setText(" " + (Math.round(weather.getMinTemp())) + "°");
@@ -147,6 +152,11 @@ public class HomeActivity extends AppCompatActivity {
         txtDay5.setText(dayNames[4]);
     }
 
+    /**
+     * Function to get the names of the next 5 days
+     * @param Days a blank array
+     * @return the populated Days array
+     */
     private String[] getForecastDays(String[] Days)
     {
         Date date = new Date();
@@ -157,8 +167,8 @@ public class HomeActivity extends AppCompatActivity {
         int i = 0;
         int k = currentDay;
 
-        while (k < (5 + currentDay)) {
-
+        while (k < (5 + currentDay))
+        {
             k++;
             Calendar nextDays = Calendar.getInstance();
             nextDays.add(Calendar.DATE, i + 1);
@@ -169,6 +179,55 @@ public class HomeActivity extends AppCompatActivity {
         return Days;
     }
 
+    /**
+     * Initialise componets as well as network variables
+     */
+    private void init() {
+
+        connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        netInfo = connManager.getActiveNetworkInfo();
+        isConnected = netInfo != null && netInfo.isConnectedOrConnecting();
+        locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        permissionResult = this.checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION");
+        dialogBuilder = new AlertDialog.Builder(HomeActivity.this);
+
+        days[0] = new Forecast();
+        days[1] = new Forecast();
+        days[2] = new Forecast();
+        days[3] = new Forecast();
+        days[4] = new Forecast();
+
+        imgMain = findViewById(R.id.imgMain);
+        imgDay1 = findViewById(R.id.imgDay1);
+        imgDay2 = findViewById(R.id.imgDay2);
+        imgDay3 = findViewById(R.id.imgDay3);
+        imgDay4 = findViewById(R.id.imgDay4);
+        imgDay5 = findViewById(R.id.imgDay5);
+        main = findViewById(R.id.main);
+        txtCurrentTemp = findViewById(R.id.txtCurrentTemp);
+        txtCity = findViewById(R.id.txtCity);
+        txtCurrentCondition = findViewById(R.id.txtCurrentCondition);
+        txtCurrentMax = findViewById(R.id.txtCurrentMax);
+        txtCurrentMin = findViewById(R.id.txtCurrentMin);
+        txtCurrentT = findViewById(R.id.txtCurrentT);
+        txtTemp1 = findViewById(R.id.txtTemp1);
+        txtTemp2 = findViewById(R.id.txtTemp2);
+        txtTemp3 = findViewById(R.id.txtTemp3);
+        txtTemp4 = findViewById(R.id.txtTemp4);
+        txtTemp5 = findViewById(R.id.txtTemp5);
+        txtDay1 = findViewById(R.id.txtDay1);
+        txtDay2 = findViewById(R.id.txtDay2);
+        txtDay3 = findViewById(R.id.txtDay3);
+        txtDay4 = findViewById(R.id.txtDay4);
+        txtDay5 = findViewById(R.id.txtDay5);
+    }
+
+    /**
+     * Check if permission is gragrantednnted
+     * @param permissionResult
+     * @param locManager
+     * @param internetConnectivity
+     */
     private void checkPermissionsAndConnectivity(int permissionResult, LocationManager locManager, boolean internetConnectivity) {
         if (permissionResult == 0)
         {
@@ -176,7 +235,7 @@ public class HomeActivity extends AppCompatActivity {
             {
                 if(internetConnectivity)
                 {
-                    stimulateSomeWork();
+                    startWork();
                 }
                 else
                 {
@@ -213,6 +272,12 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Request permission
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -238,7 +303,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
     }
-    private void stimulateSomeWork()
+
+    /**
+     * Start checks if GPS and Internet granted
+     */
+    private void startWork()
     {
         new Handler().postDelayed(new Runnable()
         {
@@ -249,6 +318,9 @@ public class HomeActivity extends AppCompatActivity {
         }, 1000);
     }
 
+    /**
+     * Listener updates location values and excecute JSONWeather task if needed
+     */
     private void start() {
 
         locManager2 = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -306,43 +378,9 @@ public class HomeActivity extends AppCompatActivity {
             longitude = location.getLongitude();
         }
 
-        JSONWeatherTask task = new JSONWeatherTask();
+        JSONWeatherTask task = new JSONWeatherTask();       //Start new task
         task.execute(Double.toString(latitude),Double.toString(longitude), lang);
 
-    }
-
-    private void init() {
-
-        connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        netInfo = connManager.getActiveNetworkInfo();
-        isConnected = netInfo != null && netInfo.isConnectedOrConnecting();
-        locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        permissionResult = this.checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION");
-        dialogBuilder = new AlertDialog.Builder(HomeActivity.this);
-
-        imgMain = findViewById(R.id.imgMain);
-        imgDay1 = findViewById(R.id.imgDay1);
-        imgDay2 = findViewById(R.id.imgDay2);
-        imgDay3 = findViewById(R.id.imgDay3);
-        imgDay4 = findViewById(R.id.imgDay4);
-        imgDay5 = findViewById(R.id.imgDay5);
-        main = findViewById(R.id.main);
-        txtCurrentTemp = findViewById(R.id.txtCurrentTemp);
-        txtCity = findViewById(R.id.txtCity);
-        txtCurrentCondition = findViewById(R.id.txtCurrentCondition);
-        txtCurrentMax = findViewById(R.id.txtCurrentMax);
-        txtCurrentMin = findViewById(R.id.txtCurrentMin);
-        txtCurrentT = findViewById(R.id.txtCurrentT);
-        txtTemp1 = findViewById(R.id.txtTemp1);
-        txtTemp2 = findViewById(R.id.txtTemp2);
-        txtTemp3 = findViewById(R.id.txtTemp3);
-        txtTemp4 = findViewById(R.id.txtTemp4);
-        txtTemp5 = findViewById(R.id.txtTemp5);
-        txtDay1 = findViewById(R.id.txtDay1);
-        txtDay2 = findViewById(R.id.txtDay2);
-        txtDay3 = findViewById(R.id.txtDay3);
-        txtDay4 = findViewById(R.id.txtDay4);
-        txtDay5 = findViewById(R.id.txtDay5);
     }
 
 }

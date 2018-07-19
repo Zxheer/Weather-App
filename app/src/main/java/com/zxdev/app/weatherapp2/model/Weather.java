@@ -2,6 +2,12 @@ package com.zxdev.app.weatherapp2.model;
 
 import android.util.Log;
 
+/**
+ * @author Zaheer Ebrahim
+ * SOLAR
+ * 2018-07-19
+ * Version 1.1.0
+ */
 public class Weather {
 
     private String condition;
@@ -10,16 +16,23 @@ public class Weather {
     private double minTemp;
     private double maxTemp;
 
+    /*
+        Empty default constructor for the weather information
+     */
     public Weather() {
-
     };
 
     public String getCondition() {
         return condition;
     }
+    /**
+     * Mutator to match the condition in the API to the correct condition for the image using the imageHelper
+     * @param condition Current weather condition
+     */
     public void setCondition(String condition) {
 
-        switch (condition) {
+        switch (condition)
+        {
             case "Thunderstorm":
             case "Drizzle":
             case "Rain":
